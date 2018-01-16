@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -20,9 +21,35 @@ while 1:
     a=soup.findAll('li',{'class':'clearfix'},text=None)
     for url in a:
         soup1=BeautifulSoup(''.join(str(url)))
+	data_id= soup1.find('li').get('data-id')
         b = soup1.find('div',{'class':'timu clearfix'},text=None).find('u').getText()
         c = soup1.find('a').get('href')
-	print b,c
+	detail_url = c + '/house/'+ str(data_id) +'/housedetail.htm' 
+	print '#########'
+	print b, detail_url
+	#获取详情页的关键字	
+	res = requests.get(detail_url)
+	res.encoding = 'gb18030' 
+	soup2=BeautifulSoup(res.text)
+	#价格
+	h_price = soup2.find('div',{'class':'main-info-price'},text=None)
+	print h_price.getText()
+	#楼盘地址
+	floor_add = soup2.findAll('li',{'class':'list-text'},text=None)
+	print (floor_add[1]).getText()
+	#开发商
+	dev_business = floor_add[0].getText()
+	print dev_business
+	#项目特色
+	programme = soup2.findAll('span',{'class':'tag'},text=None)
+	for i in programme: print (i.getText())
+	#产权年限
+	owner = soup2.find('div',{'class':'clearfix cqnx_512'},text=None)
+	print owner.getText()
+	#开盘时间
+
+
+	
 
     time.sleep(1)
     i+=1
