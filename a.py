@@ -9,10 +9,51 @@ from BeautifulSoup import BeautifulSoup
 import time
 
 
+#获取区县
+city_name = 'haikoushi'
+
+url = 'http://newhouse.hn.fang.com/house/s/list/'+ city_name +'/?ctm=1.hn.xf_search.tomap.1&a=getDistAreaTag&city=hn'
+
+quxian = (json.loads((requests.get(url)).text))['distArea']
+
+for area in quxian:
+    for k in area:
+        if k == 'quanpin' and area[k] == city_name :  
+	    data = area['area']
+	    for c in data:
+		print '区县:', c['name']
+
+#获取均价
+
+url2= 'http://newhouse.hn.fang.com/house/s/?ctm=1.hn.xf_search.lpsearch_area.1#no'
+
+res2 = requests.get(url2)
+res2.encoding = 'gb18030'
+soups=BeautifulSoup(res2.text)
+quyu_price = soups.find('li',{'class':'quyu_name bj_price'},text=None)
+for k in quyu_price.findAll('a'):
+    print '均价',k.getText()
+
+
+#获取类型
+leixings = soups.find('ul',{'id':'options_purposes'},text=None)
+lxs = leixings.findAll('li',{'class':'open'},text=None)
+for k in lxs:
+    print '类型:', k.getText()
+
+#获取户型
+huxing = soups.findAll('a',{'data-name':'bedrooms'},text=None)
+
+for k in huxing:
+    print '户型:', k.getText()
+
+
+
+
 
 i=1
 while 1:
-    url = 'http://newhouse.hn.fang.com/house/s/list/haikoushi/?ctm=1.hn.xf_search.tomap.1&strDistrict=%E6%B5%B7%E5%8F%A3%E5%B8%82&strSort=mobileyhnew&PageNo='+str(i)+'&zoom=12&city=hn&a=ajaxSearch'
+    url = 'http://newhouse.hn.fang.com/house/s/list/'+ city_name +'/?ctm=1.hn.xf_search.tomap.1&strDistrict=%E6%B5%B7%E5%8F%A3%E5%B8%82&strSort=mobileyhnew&PageNo='+str(i)+'&zoom=12&city=hn&a=ajaxSearch'
     r = requests.get(url)
     data = json.loads(r.text)
     if data['data'] == "false" :   break
