@@ -93,6 +93,12 @@ while 1:
 	a = (sale_data[1].findAll('div',{'class':'list-right'},text=None))[2::]
 	start_time = a[0].getText() 
 	print '开盘时间',start_time
+
+	#获取装修情况
+	d=sale_data[0].findAll('div',{'class':'list-right'},text=None)
+	print '装修情况:', d[3].getText()
+
+
 	#交房时间
 	rev_house_time = a[1].getText()
 	print '交房时间',rev_house_time
