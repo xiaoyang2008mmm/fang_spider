@@ -66,7 +66,6 @@ while 1:
         b = soup1.find('div',{'class':'timu clearfix'},text=None).find('u').getText()
         c = soup1.find('a').get('href')
 	detail_url = c + '/house/'+ str(data_id) +'/housedetail.htm' 
-	print '#########'
 	print '小区名字:',b
 	print '详情页面',detail_url
 	#获取详情页的关键字	
@@ -143,6 +142,13 @@ while 1:
 	pt = (soup2.find('ul',{'class':'sheshi_zb'},text=None)).getText()
 	print '配套',pt
 	
+
+	#获取户型图
+	huxing_url = 'http://zhongyangwenhuachengld.fang.com/house/ajaxrequest/householdlist_get.php?newcode=' + str(data_id) +'&start=0&limit=100&room=all'
+	huxing_data = json.loads((requests.get(huxing_url)).text)
+	for k in huxing_data:
+	    print '户型图:',k['houseimageurl']
+	print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
 	
 
