@@ -93,9 +93,12 @@ while 1:
 	start_time = a[0].getText() 
 	print '开盘时间',start_time
 
-	#获取装修情况
+	#获取装修状况
 	d=sale_data[0].findAll('div',{'class':'list-right'},text=None)
-	print '装修情况:', d[3].getText()
+	print '装修状况:', d[3].getText()
+
+	#获取物业类别 
+	print '物业类别',d[0].getText()
 
 
 	#交房时间
