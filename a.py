@@ -53,9 +53,9 @@ for k in huxing:
 """
 
 ####
-mysql_data = {}
 
 page=1
+j=1   #循坏计数MySQL的id
 while 1:
     url = 'http://newhouse.hn.fang.com/house/s/list/'+ city_name +'/?ctm=1.hn.xf_search.tomap.1&strDistrict=%E6%B5%B7%E5%8F%A3%E5%B8%82&strSort=mobileyhnew&PageNo='+str(page)+'&zoom=12&city=hn&a=ajaxSearch'
     r = requests.get(url)
@@ -65,6 +65,7 @@ while 1:
     soup=BeautifulSoup(''.join(houses))           
     a=soup.findAll('li',{'class':'clearfix'},text=None)
     for url in a:
+	mysql_data = {}
         soup1=BeautifulSoup(''.join(str(url)))
 	data_id= soup1.find('li').get('data-id')
         b = soup1.find('div',{'class':'timu clearfix'},text=None).find('u').getText()
@@ -73,7 +74,8 @@ while 1:
 	#print '小区名字:',b
 	#print '详情页面',detail_url
 	try:
-	    mysql_data['templet']=b
+	    #mysql_data['templet']=b
+	    pass
 	except:
 	    pass
 	#获取详情页的关键字	
@@ -146,7 +148,7 @@ while 1:
 	    pass
 	#print '装修状况:', d[3].getText()
 	try:
-	    mysql_data['qx'] = d[3].getText()
+	    mysql_data['zxzk'] = d[3].getText()
         except:
             pass
 
@@ -162,7 +164,7 @@ while 1:
 	rev_house_time = a[1].getText()
 	#print '交房时间',rev_house_time
 	try:
-	    mysql_data['jfsj'] = rev_house_time
+	    mysql_data['jysj'] = rev_house_time
         except:
             pass
 
@@ -183,7 +185,7 @@ while 1:
 	try:
 	    
 	    zlhx = mainunit
-	    mysql_data['redirecturl'] = zlhx
+	    mysql_data['zlhx'] = zlhx
         except:
             pass
 
@@ -288,14 +290,72 @@ while 1:
 	    #print '户型图:',k['houseimageurl']
 	    hx_str= hx_str + (k['houseimageurl']) + ' '
 	try:
-	     mysql_data['userip'] = hx_str
+	     mysql_data['hxt'] = hx_str
 	except:
             pass
 	
 
+	##自定义增加类型字段
+	mysql_data['typeid'] = 8
+	mysql_data['aid'] = j
+
 	print  mysql_data
     	#插入数据
-    	DedeAddon1718.create(**mysql_data)
+    	DedeAddon21.create(**mysql_data)
+
+
+	#表DedeArchives
+	archive_dict = {}
+	archive_dict['id']=j
+        archive_dict['typeid']=8 
+        archive_dict['typeid2']=0
+        archive_dict['sortrank']=1514189805 
+        archive_dict['flag']= 'p'
+        archive_dict['ismake'] = 1
+        archive_dict['channel']=  21
+        archive_dict['arcrank']=  0
+        archive_dict['click']=  33
+        archive_dict['money']=  0
+        archive_dict['title']=  b
+        archive_dict['shorttitle']= '' 
+        archive_dict['color']=  ''
+        archive_dict['writer']=  'admin'
+        archive_dict['source']=  ''
+        archive_dict['litpic']= '/img'
+        archive_dict['pubdate']= 1514189805 
+        archive_dict['senddate']=  1514189805
+        archive_dict['mid']= 1
+        archive_dict['keywords']= '关键词'
+        archive_dict['lastpost']= 0
+        archive_dict['scores']= 0
+        archive_dict['goodpost']=0 
+        archive_dict['badpost']= 0
+        archive_dict['voteid']= 0
+        archive_dict['notpost']= 0
+        archive_dict['description']= '描述'
+        archive_dict['filename']= ''
+        archive_dict['dutyadmin']= 1
+        archive_dict['tackid']= 0
+        archive_dict['mtype']= 0
+        archive_dict['weight']= 25
+	
+	DedeArchives.create(**archive_dict)
+
+
+	#表 dede_arctiny
+	arctiny_dict={}
+        arctiny_dict['id'] = j 
+        arctiny_dict['typeid'] = 8   
+        arctiny_dict['typeid2'] = 0 
+        arctiny_dict['arcrank'] = 0
+        arctiny_dict['channel'] = 21
+        arctiny_dict['senddate'] = 1514189805 
+        arctiny_dict['sortrank'] =  1514189805
+        arctiny_dict['mid'] =  1
+
+	DedeArctiny.create(**arctiny_dict)
+
+    	j+=1
 
 	print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
 
