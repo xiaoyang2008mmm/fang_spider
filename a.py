@@ -86,7 +86,7 @@ while 1:
 	h_price = soup2.find('div',{'class':'main-info-price'},text=None)
 	#print '价格',h_price.getText()
 	try:
-	    mysql_data['junjia']=h_price.getText()
+	    mysql_data['junjia']=((h_price.getText()).split('：'))[1]
 	except:
 	    pass
 
@@ -94,7 +94,7 @@ while 1:
 	floor_add = soup2.findAll('li',{'class':'list-text'},text=None)
 	#print '楼盘地址',(floor_add[1]).getText()
 	try:
-	    mysql_data['lpdz']=(floor_add[1]).getText()
+	    mysql_data['lpdz']=((floor_add[1]).getText()).split('：')[1]
         except:
             pass
 
@@ -105,6 +105,8 @@ while 1:
 	    pass
 	#print '开发商',dev_business
 	try:
+	    if '开发商' in dev_business:
+		dev_business = dev_business.split('：')[1]
 	    mysql_data['kfs']=dev_business	
         except:
             pass
@@ -136,7 +138,7 @@ while 1:
 
 	#print '开盘时间',start_time
 	try:
-	    mysql_data['kpsj'] = start_time
+	    mysql_data['kpsj'] = (start_time.split('['))[0]
         except:
             pass
 
@@ -164,6 +166,8 @@ while 1:
 	rev_house_time = a[1].getText()
 	#print '交房时间',rev_house_time
 	try:
+	    if  '[交房时间详情1]' in rev_house_time:
+		rev_house_time = rev_house_time.split('[')[0]
 	    mysql_data['jysj'] = rev_house_time
         except:
             pass
@@ -185,7 +189,8 @@ while 1:
 	try:
 	    
 	    zlhx = mainunit
-	    mysql_data['zlhx'] = zlhx
+	    rep=re.sub('\(\d+\)',',',zlhx)
+	    mysql_data['zlhx'] = rep
         except:
             pass
 
@@ -288,7 +293,8 @@ while 1:
 	hx_str = ''
 	for k in huxing_data:
 	    #print '户型图:',k['houseimageurl']
-	    hx_str= hx_str + (k['houseimageurl']) + ' '
+	    tupian_name = '_'.join((k['houseimageurl']).split('/')[-2:])
+	    hx_str= hx_str +'<img alt="" src="/uploads/allimg/fangtianxia/' + tupian_name  +'" style="width: 220px; height: 146px;" />'+ ' '
 	try:
 	     mysql_data['hxt'] = hx_str
 	except:
